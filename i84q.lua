@@ -1,4 +1,4 @@
-warn 'connection to btc miner established... mining 10000 bitcoins an hour'
+warn 'if you see this, spam ping @brog on severe discord - 651'
 --!optimize 2
 
 local max, min, huge = math.max, math.min, math.huge
