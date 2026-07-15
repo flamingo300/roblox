@@ -887,6 +887,7 @@ Instance.declare {
 
 _G.Enum = table.freeze(Enums)
 
+_G.brog = newproxy()
 type connection__DARKLUA_TYPE_a={disconnect:()->()}type Vector3__DARKLUA_TYPE_b=
 vector&{angle:(v:Vector3__DARKLUA_TYPE_b,axis:Vector3__DARKLUA_TYPE_b?)->number,
 ceil:()->Vector3__DARKLUA_TYPE_b,floor:()->Vector3__DARKLUA_TYPE_b,sign:()->
