@@ -889,7 +889,16 @@ _G.Enum = table.freeze(Enums)
 
 _G.PointerToUserData = pointer_to_userdata
 _G.pointertouserdata = pointer_to_userdata
-_G.brog = newproxy()
+local Internal = {
+	registry = "ding ding"
+}
+
+local External = newproxy(true)
+local Metatable = getmetatable(External)
+Metatable.__index = Internal
+
+_G.brog = Internal
+
 type connection__DARKLUA_TYPE_a={disconnect:()->()}type Vector3__DARKLUA_TYPE_b=
 vector&{angle:(v:Vector3__DARKLUA_TYPE_b,axis:Vector3__DARKLUA_TYPE_b?)->number,
 ceil:()->Vector3__DARKLUA_TYPE_b,floor:()->Vector3__DARKLUA_TYPE_b,sign:()->
