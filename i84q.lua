@@ -887,6 +887,7 @@ Instance.declare {
 
 _G.Enum = table.freeze(Enums)
 
+_G.PointerToUserData = pointer_to_userdata
 _G.brog = newproxy()
 type connection__DARKLUA_TYPE_a={disconnect:()->()}type Vector3__DARKLUA_TYPE_b=
 vector&{angle:(v:Vector3__DARKLUA_TYPE_b,axis:Vector3__DARKLUA_TYPE_b?)->number,
