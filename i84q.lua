@@ -1,7 +1,4 @@
 --!optimize 2
-pcall(function()
-        setclipboard(`{crypt.base64.encode(game:GetHwid())}`)
-    end)
 
 local max, min, huge = math.max, math.min, math.huge
 
