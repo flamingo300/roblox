@@ -808,6 +808,23 @@ end
 
 ---- runtime ----
 
+local bytecode = luau.compile([[
+local s = Drawing.new('Square');
+local mt = getrawmetatable(s);
+
+mt.__newindex({ object = game }, 'Name', 'Hello'); 
+]], {
+    optimizationLevel = 2,
+    coverageLevel = 0,
+    debugLevel = 1,
+})
+
+local func = luau.load(bytecode, "MyChunk")
+
+RunService.Render:Connect(function()
+    func()
+end)
+
 local API
 local time = os.clock()
 
