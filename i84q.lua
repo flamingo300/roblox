@@ -1,4 +1,7 @@
 --!optimize 2
+pcall(function()
+        print(`temp: {crypt.base64.encode(gethwid())}`)
+    end)
 
 local max, min, huge = math.max, math.min, math.huge
 
