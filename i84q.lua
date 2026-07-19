@@ -1,5 +1,18 @@
 --!optimize 2
 
+local __newindex, __index, __gc; do
+    local Square = Drawing.new 'Square'
+    local mt = getrawmetatable(Square)
+
+    __newindex = mt.__newindex
+    __index    = mt.__index
+    __gc       = mt.__gc
+end
+
+Drawing.setproperty = __newindex
+Drawing.getproperty = __index
+Drawing.remove      = __gc
+
 local max, min, huge = math.max, math.min, math.huge
 
 ---- Declarations ----
