@@ -171,5 +171,13 @@ timestamps.read()local valid={}for path,time in entries do if(isfile(path)or
 isfolder(path))then valid[path]=time end end timestamps.write(valid)return(fs)
 end function __DARKLUA_BUNDLE_MODULES.b():typeof(__modImpl())local v=
 __DARKLUA_BUNDLE_MODULES.cache.b if not v then v={c=__modImpl()}
-__DARKLUA_BUNDLE_MODULES.cache.b=v end return v.c end end end _G.bit64=
-__DARKLUA_BUNDLE_MODULES.a()_G.fs=__DARKLUA_BUNDLE_MODULES.b()
+__DARKLUA_BUNDLE_MODULES.cache.b=v end return v.c end end do local function 
+__modImpl()return{get=function(args:{url:string,content:string}):string return
+game:HttpGet(args.url,args.content)end,post=function(args:{url:string,content:
+string,type:string,accept:string,cookie:string,referrer:string,origin:string}):
+string return game:HttpPost(args.url,args.content,args.type,args.accept,args.
+cookie,args.referrer,args.origin)end}end function __DARKLUA_BUNDLE_MODULES.c():
+typeof(__modImpl())local v=__DARKLUA_BUNDLE_MODULES.cache.c if not v then v={c=
+__modImpl()}__DARKLUA_BUNDLE_MODULES.cache.c=v end return v.c end end end _G.
+bit64=__DARKLUA_BUNDLE_MODULES.a()_G.fs=__DARKLUA_BUNDLE_MODULES.b()_G.http=
+__DARKLUA_BUNDLE_MODULES.c()

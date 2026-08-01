@@ -1144,6 +1144,48 @@ declare DrawingImmediate: {
     ) -> (vector);
 }
 
+declare http: {
+    --[=[
+        Sends a GET request to the given URL, and returns the response.
+
+        @param url string
+        @param content string?
+        @return (url: string, content: string?)
+    ]=]
+    get: (
+        {
+            url:     string,
+            content: string?,
+        }
+    ) -> string;
+
+    --[=[
+        Sends a POST request to the given URL, and returns the response.
+
+        Valid types for `type`, `accept` are: `"application/json"`, `"application/x-www-form-urlencoded"`, `"text/plain"`, `"text/html"`, `"multipart/form-data"`.
+
+        @param url string
+        @param content string
+        @param type string?
+        @param accept string?
+        @param cookie string?
+        @param referrer string?
+        @param origin string?
+        @return (url: string, content: string?)
+    ]=]
+    post: (
+        {
+            url:      string,
+            content:  string,
+            type:     string?,
+            accept:   string?,
+            cookie:   string?,
+            referrer: string?,
+            origin:   string?
+        }
+    ) -> string;
+}
+
 declare crypt: {
     --[=[
         Generates cryptographically secure random bytes of the specified size.
