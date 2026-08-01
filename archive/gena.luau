@@ -1406,3 +1406,5 @@ local c=a.load'f'local d=a.load'g'local e=a.load'h'
 return table.freeze{Vector3=b,Vector2=c,CFrame=d,Color3=e}
 end end
 _G.Signal=a.load'a'
+
+return true

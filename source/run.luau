@@ -1,3 +1,5 @@
+require('@archive/gena')
+
 ---- assignments ----
 
 _G.bit64 = require('@types/bit64')
