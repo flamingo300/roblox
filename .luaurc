@@ -1,0 +1,6 @@
+{
+  "aliases": {
+    "libraries": "./source/libraries",
+    "types":         "./source/types"
+  }
+}

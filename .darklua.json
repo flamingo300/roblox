@@ -1,0 +1,8 @@
+{
+  "generator": "dense",
+  "bundle": {
+    "require_mode": "luau"
+  },
+
+  "rules": ["make_assignment_local", "compute_expression"]
+}
