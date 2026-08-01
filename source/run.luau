@@ -1,5 +1,4 @@
 require('@archive/gena')
-require('@libraries/memory')
 
 ---- assignments ----
 
