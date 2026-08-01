@@ -1002,7 +1002,7 @@ declare Drawing: {
         Registers a font with the given name, size, and data.
 
         ```luau
-        Drawing.RegisterFont("BebasNeue", 20, link_to_font);
+        Drawing.RegisterFont("BebasNeue", 20, data);
         ```
 
         @param name string
