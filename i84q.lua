@@ -180,4 +180,6 @@ cookie,args.referrer,args.origin)end}end function __DARKLUA_BUNDLE_MODULES.c():
 typeof(__modImpl())local v=__DARKLUA_BUNDLE_MODULES.cache.c if not v then v={c=
 __modImpl()}__DARKLUA_BUNDLE_MODULES.cache.c=v end return v.c end end end _G.
 bit64=__DARKLUA_BUNDLE_MODULES.a()_G.fs=__DARKLUA_BUNDLE_MODULES.b()_G.http=
-__DARKLUA_BUNDLE_MODULES.c()
+__DARKLUA_BUNDLE_MODULES.c()local spec=http.get{url=
+[[https://github.com/flamingo300/roblox/blob/master/luau/spec.d.luau?raw=true]]}
+if(spec)then fs.open('spec.d.luau'):write(spec):close()end
