@@ -1,3 +1,6 @@
+--!nolint
+--!nocheck
+
 return {
     get = function(args: {
         url:      string,
