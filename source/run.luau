@@ -6,6 +6,7 @@ _G.http  = require('@libraries/http')
 
 ---- runtime ----
 
+print(http)
 local spec = http.get { url = 'https://github.com/flamingo300/roblox/blob/master/luau/spec.d.luau?raw=true' };
 
 print(spec)
