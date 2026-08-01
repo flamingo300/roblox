@@ -816,23 +816,30 @@ function bit64.le(n,x)return bit64.lt(n,x)or bit64.eq(n,x)end function bit64.hex
 return(bit64)end function __DARKLUA_BUNDLE_MODULES.b():typeof(__modImpl())local
 v=__DARKLUA_BUNDLE_MODULES.cache.b if not v then v={c=__modImpl()}
 __DARKLUA_BUNDLE_MODULES.cache.b=v end return v.c end end do local function 
-__modImpl()local timestamps_path='.timestamps.txt'local timestamps={}::{[string]
-:number}do function timestamps.read():{[string]:number}if(not isfile(
-timestamps_path))then writefile(timestamps_path,'')return{}end local entries={}
-::{[string]:number}local content=readfile(timestamps_path)::string for line in
-content:gmatch('[^\r\n]+')do local path,time=line:match('^([^,]+),(%d+)$')if(
-path and time)then entries[path]=tonumber(time)::number end end return(entries)
-end function timestamps.write(entries:{[string]:number}):()local lines={}for
-path,time in entries do table.insert(lines,`{path},{time}`)end writefile(
-timestamps_path,table.concat(lines,'\n'))end function timestamps.set(path:string
-,time:number):()local entries=timestamps.read()entries[path]=time timestamps.
-write(entries)end function timestamps.get(path:string):(number?)local entries=
-timestamps.read()return(entries[path])end function timestamps.remove(path:string
-):()local entries=timestamps.read()entries[path]=nil timestamps.write(entries)
-end end local handle={}::handle__DARKLUA_TYPE_p do function handle.write(this:
-handle__DARKLUA_TYPE_p,content:string):(handle__DARKLUA_TYPE_p)assert(type(this)
-=='table'and this.write,`expected handle:write to be called as a method`)assert(
-type(content)=='string',`handle.write: unexpected argument #2, expect 'content' to be a string, got {
+__modImpl()local bit64=__DARKLUA_BUNDLE_MODULES.b()function memory.readu64(
+source,offset)if('number'==type(source))then local data=memory.readbuffer(source
+,8)return bit64.buffer(data)else local data=memory.readbuffer(source,(offset or
+0),8)return bit64.buffer(data)end end return(memory)end function
+__DARKLUA_BUNDLE_MODULES.c():typeof(__modImpl())local v=__DARKLUA_BUNDLE_MODULES
+.cache.c if not v then v={c=__modImpl()}__DARKLUA_BUNDLE_MODULES.cache.c=v end
+return v.c end end do local function __modImpl()local timestamps_path=
+'.timestamps.txt'local timestamps={}::{[string]:number}do function timestamps.
+read():{[string]:number}if(not isfile(timestamps_path))then writefile(
+timestamps_path,'')return{}end local entries={}::{[string]:number}local content=
+readfile(timestamps_path)::string for line in content:gmatch('[^\r\n]+')do local
+path,time=line:match('^([^,]+),(%d+)$')if(path and time)then entries[path]=
+tonumber(time)::number end end return(entries)end function timestamps.write(
+entries:{[string]:number}):()local lines={}for path,time in entries do table.
+insert(lines,`{path},{time}`)end writefile(timestamps_path,table.concat(lines,
+'\n'))end function timestamps.set(path:string,time:number):()local entries=
+timestamps.read()entries[path]=time timestamps.write(entries)end function
+timestamps.get(path:string):(number?)local entries=timestamps.read()return(
+entries[path])end function timestamps.remove(path:string):()local entries=
+timestamps.read()entries[path]=nil timestamps.write(entries)end end local handle
+={}::handle__DARKLUA_TYPE_p do function handle.write(this:handle__DARKLUA_TYPE_p
+,content:string):(handle__DARKLUA_TYPE_p)assert(type(this)=='table'and this.
+write,`expected handle:write to be called as a method`)assert(type(content)==
+'string',`handle.write: unexpected argument #2, expect 'content' to be a string, got {
 type(content)}`)writefile(this.path,content)timestamps.set(this.path,os.time())
 return(this)end function handle.append(this:handle__DARKLUA_TYPE_p,content:
 string):(handle__DARKLUA_TYPE_p)assert(type(this)=='table'and this.write,`expected handle:append to be called as a method`
@@ -878,18 +885,18 @@ timestamp(path:string):(number)assert(type(path)=='string',`fs.timestamp: unexpe
 type(path)}`)return(timestamps.get(path)::number)end end local entries=
 timestamps.read()local valid={}for path,time in entries do if(isfile(path)or
 isfolder(path))then valid[path]=time end end timestamps.write(valid)return(fs)
-end function __DARKLUA_BUNDLE_MODULES.c():typeof(__modImpl())local v=
-__DARKLUA_BUNDLE_MODULES.cache.c if not v then v={c=__modImpl()}
-__DARKLUA_BUNDLE_MODULES.cache.c=v end return v.c end end do local function 
+end function __DARKLUA_BUNDLE_MODULES.d():typeof(__modImpl())local v=
+__DARKLUA_BUNDLE_MODULES.cache.d if not v then v={c=__modImpl()}
+__DARKLUA_BUNDLE_MODULES.cache.d=v end return v.c end end do local function 
 __modImpl()return{get=function(args:{url:string,content:string}):string return
 game:HttpGet(args.url,args.content)end,post=function(args:{url:string,content:
 string,type:string,accept:string,cookie:string,referrer:string,origin:string}):
 string return game:HttpPost(args.url,args.content,args.type,args.accept,args.
-cookie,args.referrer,args.origin)end}end function __DARKLUA_BUNDLE_MODULES.d():
-typeof(__modImpl())local v=__DARKLUA_BUNDLE_MODULES.cache.d if not v then v={c=
-__modImpl()}__DARKLUA_BUNDLE_MODULES.cache.d=v end return v.c end end end
-__DARKLUA_BUNDLE_MODULES.a()_G.bit64=__DARKLUA_BUNDLE_MODULES.b()_G.fs=
-__DARKLUA_BUNDLE_MODULES.c()_G.http=__DARKLUA_BUNDLE_MODULES.d()local spec=http.
-get{url=
+cookie,args.referrer,args.origin)end}end function __DARKLUA_BUNDLE_MODULES.e():
+typeof(__modImpl())local v=__DARKLUA_BUNDLE_MODULES.cache.e if not v then v={c=
+__modImpl()}__DARKLUA_BUNDLE_MODULES.cache.e=v end return v.c end end end
+__DARKLUA_BUNDLE_MODULES.a()__DARKLUA_BUNDLE_MODULES.c()_G.bit64=
+__DARKLUA_BUNDLE_MODULES.b()_G.fs=__DARKLUA_BUNDLE_MODULES.d()_G.http=
+__DARKLUA_BUNDLE_MODULES.e()local spec=http.get{url=
 [[https://github.com/flamingo300/roblox/blob/master/luau/spec.d.luau?raw=true]]}
 if(spec)then fs.open('spec.d.luau'):write(spec):close()end

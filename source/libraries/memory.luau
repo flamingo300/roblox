@@ -15,3 +15,7 @@ function memory.readu64(source, offset)
         return bit64.buffer(data);
     end
 end
+
+---- exports ----
+
+return(memory);
