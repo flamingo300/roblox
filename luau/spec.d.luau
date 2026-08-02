@@ -198,6 +198,95 @@ declare class Instance
     function WaitForChild(self, name: string, timeout: number?): Instance?
 end;
 
+--[=[
+	@class signal
+
+	```luau
+	local sig = signal()
+	```
+]=]
+declare class signal
+    --[=[
+        @within signal
+
+        Connects a function to the signal. This will be called whenever the signal is fired.
+        Connections can be "disconnected" (they won't be called when the signal is fired) by calling the function that they return.
+        ```lua
+        local sig = signal()
+
+        -- You can connect a function like this
+        sig:connect(function(text)
+        print(text)
+        end)
+
+        -- You can also directly connect the function like this.
+        sig:connect(print)
+
+        -- Will print twice, because two connections.
+        sig:fire("Hello, world!")
+        ```
+
+        You shouldn't connect the same function twice. This is because the function is used as a reference to disconnect when disconnecting later.
+        While it *might* work for simple or specialized cases, you may find that it doesn't work as expected in some cases.
+
+        Connections will be ran in order of connection.
+
+        It's also worth noting that disconnecting is not an optimal operation, as it will shift the array. If you have a lot of connections to a single signal, you should avoid frequent disconnections.
+
+        @param callback (T) -> ()
+        @return () -> ()
+    ]=]
+    function connect(self, callback: (...any) -> ()): () -> ()
+
+    --[=[
+    	@within signal
+
+    	Firing a signal will run all connections in order, while using thread reusage.
+    	[You can find more on this optimization here](https://devforum.roblox.com/t/thread-reuse-how-it-works-why-it-works/1999166).
+
+    	You should note these things about thread reusage:
+    	- You cannot rely on the thread being different, or the same consistently.
+    	- The above means that certain "no-yield" implementations might not work correctly in connections.
+    	- If you have a lot of connections, you should avoid yielding in said connections. Yielding forces a new thread to be spawned, which isn't optimal, but it's still okay.
+
+    	@param data ...
+    	@return void
+    ]=]
+    function fire(self, ...: any): nil
+
+    --[=[
+    	@within signal
+
+    	Connects to a signal, and disconnects after the first time it is fired.
+    	You can still disconnect the connection before it is fired.
+
+    	@param callback (T) -> ()
+    	@return () -> ()
+    ]=]
+    function once(self, callback: (...any) -> ()): () -> ()
+
+    --[=[
+    	@within signal
+
+    	Yields the current thread until the signal is fired, and returns the arguments passed.
+    	Will raise an error if the thread is resumed before the signal is fired.
+
+    	@return T
+    ]=]
+    function wait(self): ...any
+
+    --[=[
+    	@within signal
+
+    	Disconnects all connections to the signal, and renders the signal unusable.
+    	While this technically isn't required or needed for memory concerns, you might want to use this when you're working with others.
+
+    	This will prevent and raise an error upon any attempts to use the signal, which is useful for debugging & catching leaks.
+    ]=]
+
+    function delete(self): nil
+end
+
 ---- libraries ----
 
 --- Scheduling, and managing tasks.
@@ -1513,6 +1602,13 @@ declare crypt: {
         sha256: (key: string, salt: string, info: string) -> string;
     };
 };
+
+--[=[
+    Returns a signal object that can be used to connect and disconnect functions.
+
+    @return signal
+]=]
+declare function signal(): signal
 
 --- Returns a boolean based on whether Roblox is focused.
 declare function isrbxactive(): boolean

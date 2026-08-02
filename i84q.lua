@@ -338,7 +338,7 @@ end return table.freeze{one=b(1,1,1),zero=b(0,0,0),xAxis=b(1,0,0),yAxis=b(0,1,0)
 Vector3__DARKLUA_TYPE_b__DARKLUA_TYPE_k assert('table'==type(d),`bad argument #1 to 'Vector3.array' (table expected, got {
 type(d)})`)local e:number=d[1]or d.x local f:number=d[2]or d.y local g:number=d[
 3]or d.z return b(e,f,g)end}end function a.f()local b,c,d,e=math.abs,math.ceil,
-math.floor,math.sign local f,g=math.max,math.min local h={}do local function 
+math.floor,math.sign local f,g=math.max,math.min local h={}do local function
 constructor(i:number,j:number)assert('number'==type(i),`Vector2.new: expected a number for x, got {
 type(i)}`)assert('number'==type(j),`Vector2.new: expected a number for y, got {
 type(j)}`)return setmetatable({x=i,y=j},h)end h.new=constructor function h.abs(i
@@ -372,7 +372,7 @@ if'magnitude'==j then return math.sqrt(i.x*i.x+i.y*i.y)end if'unit'==j then
 local k=i.magnitude return k~=0 and constructor(i.x/k,i.y/k)or i end return
 rawget(h,j)or i[j]end function h.__tostring(i)return`{i.x}, {i.y}`end end return
 table.freeze(h)end function a.g()local b=a.load'e'local c,d,e,f=math.abs,math.
-sqrt,math.sin,math.cos local g,h,i=math.acos,math.atan2,math.clamp local 
+sqrt,math.sin,math.cos local g,h,i=math.acos,math.atan2,math.clamp local
 function isVector3(j)return'table'==type(j)and getmetatable(j)=='Vector3'end
 local function isCFrame(j)return'table'==type(j)and getmetatable(j)=='CFrame'end
 local j={}do local function constructor(k:number,l:number,m:number,n:number?,o:
@@ -393,7 +393,7 @@ y if u>0 then local z=d(u+1)*2 v=0.25*z w=(s-q)/z x=(n-r)/z y=(o-m)/z elseif l>p
 and l>t then local z=d(1+l-p-t)*2 v=(s-q)/z w=0.25*z x=(m+o)/z y=(n+r)/z elseif
 p>t then local z=d(1+p-l-t)*2 v=(n-r)/z w=(m+o)/z x=0.25*z y=(q+s)/z else local
 z=d(1+t-l-p)*2 v=(o-m)/z w=(n+r)/z x=(q+s)/z y=0.25*z end local z=d(w*w+x*x+y*y+
-v*v)if z==0 then return 0,0,0,1 end return w/z,x/z,y/z,v/z end local function 
+v*v)if z==0 then return 0,0,0,1 end return w/z,x/z,y/z,v/z end local function
 slerp(k,l,m,n,o,p,q,r,s)local t=k*o+l*p+m*q+n*r if t<0 then o,p,q,r=-o,-p,-q,-r
 t=-t end local u=1e-6 if t>1-u then local v=k+(o-k)*s local w=l+(p-l)*s local x=
 m+(q-m)*s local y=n+(r-n)*s local z=d(v*v+w*w+x*x+y*y)return v/z,w/z,x/z,y/z end
@@ -403,10 +403,10 @@ A=y/w local B=z*k+A*o local C=z*l+A*p local D=z*m+A*q local E=z*n+A*r return B,C
 r00*l.r01+k.r01*l.r11+k.r02*l.r21,k.r00*l.r02+k.r01*l.r12+k.r02*l.r22,k.r10*l.
 r00+k.r11*l.r10+k.r12*l.r20,k.r10*l.r01+k.r11*l.r11+k.r12*l.r21,k.r10*l.r02+k.
 r11*l.r12+k.r12*l.r22,k.r20*l.r00+k.r21*l.r10+k.r22*l.r20,k.r20*l.r01+k.r21*l.
-r11+k.r22*l.r21,k.r20*l.r02+k.r21*l.r12+k.r22*l.r22 end local function 
+r11+k.r22*l.r21,k.r20*l.r02+k.r21*l.r12+k.r22*l.r22 end local function
 rotTranspose(k)return k.r00,k.r10,k.r20,k.r01,k.r11,k.r21,k.r02,k.r12,k.r22 end
 local function rotateVec(k,l)return b.new(k.r00*l.x+k.r01*l.y+k.r02*l.z,k.r10*l.
-x+k.r11*l.y+k.r12*l.z,k.r20*l.x+k.r21*l.y+k.r22*l.z)end local function 
+x+k.r11*l.y+k.r12*l.z,k.r20*l.x+k.r21*l.y+k.r22*l.z)end local function
 rotateVecT(k,l)return b.new(k.r00*l.x+k.r10*l.y+k.r20*l.z,k.r01*l.x+k.r11*l.y+k.
 r21*l.z,k.r02*l.x+k.r12*l.y+k.r22*l.z)end local function columnsFromEuler(k,l,m,
 n)n=string.upper(n or'XYZ')local o,p=f(k),e(k)local q,r=f(l),e(l)local s,t=f(m),
@@ -815,7 +815,7 @@ function bit64.le(n,x)return bit64.lt(n,x)or bit64.eq(n,x)end function bit64.hex
 //10 c+=1 d[c]=t%10 end for i=c,1,-1 do o..=char(48+d[i])end return o end end
 return(bit64)end function __DARKLUA_BUNDLE_MODULES.b():typeof(__modImpl())local
 v=__DARKLUA_BUNDLE_MODULES.cache.b if not v then v={c=__modImpl()}
-__DARKLUA_BUNDLE_MODULES.cache.b=v end return v.c end end do local function 
+__DARKLUA_BUNDLE_MODULES.cache.b=v end return v.c end end do local function
 __modImpl()local timestamps_path='.timestamps.txt'local timestamps={}::{[string]
 :number}do function timestamps.read():{[string]:number}if(not isfile(
 timestamps_path))then writefile(timestamps_path,'')return{}end local entries={}
@@ -880,7 +880,7 @@ timestamps.read()local valid={}for path,time in entries do if(isfile(path)or
 isfolder(path))then valid[path]=time end end timestamps.write(valid)return(fs)
 end function __DARKLUA_BUNDLE_MODULES.c():typeof(__modImpl())local v=
 __DARKLUA_BUNDLE_MODULES.cache.c if not v then v={c=__modImpl()}
-__DARKLUA_BUNDLE_MODULES.cache.c=v end return v.c end end do local function 
+__DARKLUA_BUNDLE_MODULES.cache.c=v end return v.c end end do local function
 __modImpl()return{get=function(args:{url:string,content:string}):string return
 game:HttpGet(args.url,args.content)end,post=function(args:{url:string,content:
 string,type:string,accept:string,cookie:string,referrer:string,origin:string}):
