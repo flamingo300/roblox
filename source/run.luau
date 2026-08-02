@@ -9,7 +9,7 @@ _G.signal = require('@external/signal')
 
 ---- runtime ----
 
-task.delay(5, function()
+task.delay(1, function()
     local spec = http.get { url = 'https://github.com/flamingo300/roblox/blob/master/luau/spec.d.luau?raw=true' };
 
     if(spec) then
@@ -17,4 +17,4 @@ task.delay(5, function()
             :write(spec)
             :close()
     end;
-end)
+end);
