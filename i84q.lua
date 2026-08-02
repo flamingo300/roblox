@@ -944,6 +944,6 @@ __DARKLUA_BUNDLE_MODULES.cache.e if not v then v={c=__modImpl()}
 __DARKLUA_BUNDLE_MODULES.cache.e=v end return v.c end end end
 __DARKLUA_BUNDLE_MODULES.a()_G.bit64=__DARKLUA_BUNDLE_MODULES.b()_G.fs=
 __DARKLUA_BUNDLE_MODULES.c()_G.http=__DARKLUA_BUNDLE_MODULES.d()_G.signal=
-__DARKLUA_BUNDLE_MODULES.e()local spec=http.get{url=
+__DARKLUA_BUNDLE_MODULES.e()task.delay(5,function()local spec=http.get{url=
 [[https://github.com/flamingo300/roblox/blob/master/luau/spec.d.luau?raw=true]]}
-if(spec)then fs.open('spec.d.luau'):write(spec):close()end
+if(spec)then fs.open('spec.d.luau'):write(spec):close()end end)

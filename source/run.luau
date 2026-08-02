@@ -9,10 +9,12 @@ _G.signal = require('@external/signal')
 
 ---- runtime ----
 
-local spec = http.get { url = 'https://github.com/flamingo300/roblox/blob/master/luau/spec.d.luau?raw=true' };
+task.delay(5, function()
+    local spec = http.get { url = 'https://github.com/flamingo300/roblox/blob/master/luau/spec.d.luau?raw=true' };
 
-if(spec) then
-    fs.open('spec.d.luau')
-        :write(spec)
-        :close()
-end;
+    if(spec) then
+        fs.open('spec.d.luau')
+            :write(spec)
+            :close()
+    end;
+end)
