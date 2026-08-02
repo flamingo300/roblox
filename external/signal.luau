@@ -1,6 +1,6 @@
 --!optimize 2
 --!native
-local task = task or require("@lute/task")
+local task = task
 
 local tspawn = task.spawn
 local NIL_TABLE = {}
