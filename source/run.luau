@@ -1,11 +1,48 @@
-require('@archive/gena')
-
 ---- assignments ----
 
-_G.bit64  = require('@types/bit64')
-_G.fs     = require('@libraries/fs')
-_G.http   = require('@libraries/http')
-_G.signal = require('@external/signal')
+_G.bit64         = require('@types/integers/bit64');
+_G.fs            = require('@libraries/fs');
+_G.http          = require('@libraries/http');
+_G.signal        = require('@external/signal');
+
+_G.UDim2         = require('@types/primitives/udim2');
+_G.Point3D       = require('@types/pointers/world');
+_G.Point2D       = require('@types/pointers/screen');
+_G.PointInstance = require('@types/pointers/instance');
+_G.PointModel    = require('@types/pointers/model');
+
+---- drawing ----
+
+local render = require('@routines/render');
+
+if (type(rawget(_G, "Drawing")) ~= "table") then
+    _G.Drawing = {} :: any;
+end;
+
+(_G.Drawing :: any).attach = render.attach;
+
+-- :: mirror to bare global `Drawing` (spec declares `declare Drawing`).
+if (rawget(_G, "Drawing") ~= nil) then
+    Drawing = _G.Drawing :: any;
+end;
+
+---- declarations ----
+
+Instance.declare {
+    class    = 'Instance',
+    name     = 'Read',
+    callback = function(self: Instance, offset: number, size: number): buffer
+        return memory.readbuffer(self, offset or 0, size or 32);
+    end;
+};
+
+Instance.declare {
+    class    = 'Instance',
+    name     = 'Write',
+    callback = function(self: Instance, offset: number, data: buffer): ()
+        return memory.writebuffer(self, offset or 0, data);
+    end;
+};
 
 ---- runtime ----
 

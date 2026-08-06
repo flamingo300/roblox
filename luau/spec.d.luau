@@ -9,6 +9,27 @@ export type uint   =                           (uint64 | uint32);
 
 ---- classes ----
 
+export type CFrame = any;
+
+export type Cluster = {
+    Attachments: { [any]: {
+        Link:        Point?,
+        From:        Point?,
+        To:          Point?,
+        Size:        UDim2,
+        Position:    UDim2,
+        AnchorPoint: vector,
+    } },
+
+    Active:     boolean,
+    Paused:     boolean,
+    Connection: RBXScriptConnection?,
+
+    Pause:   (self: Cluster) -> (),
+    Resume:  (self: Cluster) -> (),
+    Destroy: (self: Cluster) -> (),
+};
+
 export type WebsocketClient = {
     --- constants ---
 
@@ -113,6 +134,55 @@ export type handle = {
     path: string;
 }
 
+declare class RBXScriptConnection
+    function Disconnect(self): ()
+end;
+
+declare class UDim
+    Scale:                                                          number
+    Offset:                                                         number
+end;
+
+declare class UDim2
+    X:                                                                UDim
+    Y:                                                                UDim
+end;
+
+declare class PointModel
+    Instance: Instance?
+    Follow:   Instance?
+    Active:   boolean
+
+    CFrame:   CFrame?
+    Size:     vector?
+
+    function Destroy(self): ()
+end;
+
+declare class PointInstance
+    Instance: Instance?
+    Active:   boolean
+
+    CFrame: CFrame?
+    Size:   vector?
+
+    function Destroy(self): ()
+end;
+
+declare class Point3D
+    Position: vector
+    Active:   boolean
+
+    function Destroy(self): ()
+end;
+
+declare class Point2D
+    Position: vector
+    Active:   boolean
+
+    function Destroy(self): ()
+end;
+
 declare class Doodle
     ZIndex:                                                         number
     Visible:                                                       boolean
@@ -186,6 +256,10 @@ declare class Quad extends Triangle
     PointD:                                                        vector
 end;
 
+declare class RBXScriptSignal
+    function Connect(self, callback: (...any) -> ()): nil
+end;
+
 declare class Instance
     Name:                                                           string
     ClassName:                                                      string
@@ -196,6 +270,25 @@ declare class Instance
     function GetChildren(self):                               { Instance }
     function FindFirstChild(self, name: string):                 Instance?
     function WaitForChild(self, name: string, timeout: number?): Instance?
+
+    --- Read `size` bytes from the given `offset` in the instance's memory, and return it as a buffer.
+    function Read(self, offset: number, size: number):              buffer
+    --- Write the `data` buffer to the given `offset` in the instance's memory.
+    function Write(self, offset: number, data: buffer):                nil
+end;
+
+declare class RunService extends Instance
+    PreLocal:                                              RBXScriptSignal
+    PostLocal:                                             RBXScriptSignal
+    PreModel:                                              RBXScriptSignal
+    PostModel:                                             RBXScriptSignal
+    PreData:                                               RBXScriptSignal
+    PostData:                                              RBXScriptSignal
+    Render:                                                RBXScriptSignal
+end;
+
+declare class DataModel extends Instance
+    function GetService(self, name: string):                      Instance
 end;
 
 --[=[
@@ -1065,28 +1158,33 @@ export type fs = {
         @return number
     ]=]
     timestamp: (path: string)                  -> (number);
-}
-
----- declarations ----
-
-declare bit64:   bit64;
-declare memory: memory;
-declare task:     task;
-declare fs:         fs;
-
-declare WebsocketClient: {
-    --[=[
-        Connects to a websocket server at the given URL, and returns a `WebsocketClient` instance.
-
-        @yields
-        @param url string
-        @return WebsocketClient
-    ]=]
-    new: (url: string) -> WebsocketClient
 };
 
+--- Over the network operations.
+export type http = {
+    --[=[
+        Performs a GET request to the given URL, and returns the response.
+
+        @param url string
+        @return string
+    ]=]
+    get: (url: string) -> (string);
+
+    --[=[
+        Performs a POST request to the given URL, with the provided data, and returns the response.
+
+        @param url string
+        @param data string
+        @return string
+    ]=]
+    post: (url: string, data: string) -> (string);
+};
+
+export type Point = Point3D | Point2D | PointInstance | PointModel | Instance;
+export type Types = Line | Text | Image | Circle | Square | Triangle | Quad;
+
 --- Retained-mode graphics.
-declare Drawing: {
+export type Drawing = {
     --[=[
         Registers a font with the given name, size, and data.
 
@@ -1116,11 +1214,41 @@ declare Drawing: {
          (("Circle")   -> Circle)   &
          (("Square")   -> Square)   &
          (("Triangle") -> Triangle) &
-         (("Quad")     -> Quad)
-}
+         (("Quad")     -> Quad),
+
+    --[=[
+        Attaches a cluster of drawings to the given descriptor, and returns it.
+
+        @param descriptor { [Types]: {
+            Link:        Point?,
+            From:        Point?,
+            To:          Point?,
+            Size:        UDim2?,
+            Position:    UDim2?,
+            AnchorPoint: vector?,
+        } }
+    ]=]
+    attach: (descriptor: { [Types]: {
+        Link:        Point?,
+        From:        Point?,
+        To:          Point?,
+        Size:        UDim2?,
+        Position:    UDim2?,
+        AnchorPoint: vector?,
+    } }) -> Cluster
+};
 
 --- Immediate-mode graphics.
-declare DrawingImmediate: {
+export type DrawingImmediate = {
+    --[=[
+        Draws a line from the given `From` position to the given `To` position, with the provided color, opacity, and thickness.
+
+        @param From vector
+        @param To vector
+        @param Color color
+        @param Opacity number
+        @param Thickness number
+    ]=]
     Line: (
         From:       vector,
         To:         vector,
@@ -1129,6 +1257,16 @@ declare DrawingImmediate: {
         Thickness:  number
     ) -> ();
 
+    --[=[
+        Draws a circle at the given `Center` position, with the provided `Radius`, color, opacity, number of segments, and thickness.
+
+        @param Center vector
+        @param Radius number
+        @param Color color
+        @param Opacity number
+        @param Segments number
+        @param Thickness number
+    ]=]
     Circle: (
         Center:     vector,
         Radius:     number,
@@ -1138,6 +1276,15 @@ declare DrawingImmediate: {
         Thickness:  number
     ) -> ();
 
+    --[=[
+        Draws a filled circle at the given `Center` position, with the provided `Radius`, color, opacity, and number of segments.
+
+        @param Center vector
+        @param Radius number
+        @param Color color
+        @param Opacity number
+        @param Segments number
+    ]=]
     FilledCircle: (
         Center:     vector,
         Radius:     number,
@@ -1146,6 +1293,16 @@ declare DrawingImmediate: {
         Segments:   number
     ) -> ();
 
+    --[=[
+        Draws a triangle with the given `PointA`, `PointB`, and `PointC` positions, with the provided color, opacity, and thickness.
+
+        @param PointA vector
+        @param PointB vector
+        @param PointC vector
+        @param Color color
+        @param Opacity number
+        @param Thickness number
+    ]=]
     Triangle: (
         PointA:     vector,
         PointB:     vector,
@@ -1155,6 +1312,15 @@ declare DrawingImmediate: {
         Thickness:  number
     ) -> ();
 
+    --[=[
+        Draws a filled triangle with the given `PointA`, `PointB`, and `PointC` positions, with the provided color and opacity.
+
+        @param PointA vector
+        @param PointB vector
+        @param PointC vector
+        @param Color color
+        @param Opacity number
+    ]=]
     FilledTriangle: (
         PointA:     vector,
         PointB:     vector,
@@ -1163,6 +1329,16 @@ declare DrawingImmediate: {
         Opacity:    number
     ) -> ();
 
+    --[=[
+        Draws a rectangle with the given `Position` and `Size`, with the provided color, opacity, rounding, and thickness.
+
+        @param Position vector
+        @param Size vector
+        @param Color color
+        @param Opacity number
+        @param Rounding number
+        @param Thickness number
+    ]=]
     Rectangle: (
         Position:   vector,
         Size:       vector,
@@ -1172,6 +1348,15 @@ declare DrawingImmediate: {
         Thickness:  number
     ) -> ();
 
+    --[=[
+        Draws a filled rectangle with the given `Position` and `Size`, with the provided color, opacity, and rounding.
+
+        @param Position vector
+        @param Size vector
+        @param Color color
+        @param Opacity number
+        @param Rounding number
+    ]=]
     FilledRectangle: (
         Position:   vector,
         Size:       vector,
@@ -1180,6 +1365,17 @@ declare DrawingImmediate: {
         Rounding:   number
     ) -> ();
 
+    --[=[
+        Draws a quadrilateral with the given `PointA`, `PointB`, `PointC`, and `PointD` positions, with the provided color, opacity, and thickness.
+
+        @param PointA vector
+        @param PointB vector
+        @param PointC vector
+        @param PointD vector
+        @param Color color
+        @param Opacity number
+        @param Thickness number
+    ]=]
     Quad: (
         PointA:     vector,
         PointB:     vector,
@@ -1190,6 +1386,16 @@ declare DrawingImmediate: {
         Thickness:  number
     ) -> ();
 
+    --[=[
+        Draws a filled quadrilateral with the given `PointA`, `PointB`, `PointC`, and `PointD` positions, with the provided color and opacity.
+
+        @param PointA vector
+        @param PointB vector
+        @param PointC vector
+        @param PointD vector
+        @param Color color
+        @param Opacity number
+    ]=]
     FilledQuad: (
         PointA:     vector,
         PointB:     vector,
@@ -1199,6 +1405,14 @@ declare DrawingImmediate: {
         Opacity:    number
     ) -> ();
 
+    --[=[
+        Draws a polyline with the given `Points`, with the provided color, opacity, and thickness.
+
+        @param Points { vector }
+        @param Color color
+        @param Opacity number
+        @param Thickness number
+    ]=]
     Polyline: (
         Points: { vector },
         Color:       color,
@@ -1206,6 +1420,17 @@ declare DrawingImmediate: {
         Thickness:  number
     ) -> ();
 
+    --[=[
+        Draws text at the given `Position`, with the provided `Size`, color, opacity, text, centeredness, and font.
+
+        @param Position vector
+        @param Size number
+        @param Color color
+        @param Opacity number
+        @param Text string
+        @param Centered boolean
+        @param Font string
+    ]=]
     Text: (
         Position:   vector,
         Size:       number,
@@ -1216,6 +1441,17 @@ declare DrawingImmediate: {
         Font:       string
     ) -> ();
 
+    --[=[
+        Draws outlined text at the given `Position`, with the provided `Size`, color, opacity, text, centeredness, and font.
+
+        @param Position vector
+        @param Size number
+        @param Color color
+        @param Opacity number
+        @param Text string
+        @param Centered boolean
+        @param Font string
+    ]=]
     OutlinedText: (
         Position:   vector,
         Size:       number,
@@ -1226,63 +1462,91 @@ declare DrawingImmediate: {
         Font:       string
     ) -> ();
 
+    --[=[
+        Returns the bounds of the given text, with the provided font and size.
+
+        @param Font string
+        @param Size number
+        @param Text string
+        @return vector
+    ]=]
     GetTextBounds: (
         Font:       string,
         Size:       number,
         Text:       string
     ) -> (vector);
-}
+};
 
-declare http: {
+---- declarations ----
+
+declare DrawingImmediate: DrawingImmediate;
+declare Drawing:                   Drawing;
+declare bit64:                       bit64;
+declare memory:                     memory;
+declare task:                         task;
+declare http:                         http;
+declare fs:                             fs;
+
+declare game:                    DataModel;
+declare workspace:                Instance;
+declare RunService:             RunService;
+
+declare Instance: {
+    declare: (
+        (
+            {
+                class:    string,
+                name:     string,
+                callback: {
+                    get: (Instance)      -> any,
+                    set: (Instance, any) -> nil
+                }
+            }
+        ) -> () & (
+            {
+                class:    string,
+                name:     string,
+                callback: {
+                    method: (Instance, ...any) -> any
+                }
+            }
+        ) -> ()
+    );
+};
+
+declare UDim2: {
+    new:        (x0: number, x1: number, y0: number, y1: number) -> UDim2;
+    fromScale:  (x: number, y: number) -> UDim2;
+    fromOffset: (x: number, y: number) -> UDim2;
+};
+
+declare PointModel: {
+    new: (Instance) -> PointModel;
+};
+
+declare PointInstance: {
+    new: (Instance) -> PointInstance;
+};
+
+declare Point2D: {
+    new: (x: number, y: number) -> Point2D;
+};
+
+declare Point3D: {
+    new: (x: number, y: number, z: number) -> Point3D;
+};
+
+--- Websocket client for connecting to websocket servers, sending and receiving messages, and handling events.
+declare WebsocketClient: {
     --[=[
-        Sends a GET request to the given URL, and returns the response.
+        Connects to a websocket server at the given URL, and returns a `WebsocketClient` instance.
 
+        @yields
         @param url string
-        @param content string?
-        @return (response: string)
+        @return WebsocketClient
     ]=]
-    get: ((
-        {
-            url:     string
-        }
-    ) -> string) & ((
-        {
-            url:     string,
-            content: string
-        }
-    ) -> string);
-
-    --[=[
-        Sends a POST request to the given URL, and returns the response.
-
-        Valid types for `type`, `accept` are: `"application/json"`, `"application/x-www-form-urlencoded"`, `"text/plain"`, `"text/html"`, `"multipart/form-data"`.
-
-        @param url string
-        @param content string
-        @param type string?
-        @param accept string?
-        @param cookie string?
-        @param referrer string?
-        @param origin string?
-        @return (response: string)
-    ]=]
-    post: ((
-        {
-            url:      string,
-            content:  string
-        }
-    ) -> string) & ((
-        {
-            url:      string,
-            content:  string,
-            type:     string?,
-            accept:   string?,
-            cookie:   string?,
-            referrer: string?,
-            origin:   string?
-        }
-    ) -> string);
-}
+    new: (url: string) -> WebsocketClient
+};
 
 declare crypt: {
     --[=[

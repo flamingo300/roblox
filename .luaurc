@@ -3,6 +3,8 @@
     "archive":            "./archive",
     "libraries": "./source/libraries",
     "types":         "./source/types",
+    "routines":  "./source/routines",
+    "core":           "./source/core",
     "external":          "./external"
   }
 }
