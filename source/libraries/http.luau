@@ -2,22 +2,11 @@
 --!nocheck
 
 return {
-    get = function(args: {
-        url:      string,
-        content:  string
-    }): string
+    get = function(args): string
         return game:HttpGet(args.url, args.content);
     end;
 
-    post = function(args: {
-        url:      string,
-        content:  string,
-        type:     string,
-        accept:   string,
-        cookie:   string,
-        referrer: string,
-        origin:   string
-    }): string
+    post = function(args): string
         return game:HttpPost(args.url, args.content, args.type, args.accept, args.cookie, args.referrer, args.origin);
     end;
-}
+} :: typeof(http);

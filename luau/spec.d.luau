@@ -304,11 +304,11 @@ export type task = {
     --[=[
         Schedules a task to run after the given delay in seconds.
 
-        @param f function | thread
         @param d number
+        @param f function | thread
         @return thread
     ]=]
-    delay: (f: () -> (), d: number) -> thread;
+    delay: (d: number, f: () -> ()) -> thread;
 
     --[=[
         Immediately executes the provided function/thread `f` in a separate thread without yielding the current thread.
@@ -1239,14 +1239,18 @@ declare http: {
 
         @param url string
         @param content string?
-        @return (url: string, content: string?)
+        @return (response: string)
     ]=]
-    get: (
+    get: ((
+        {
+            url:     string
+        }
+    ) -> string) & ((
         {
             url:     string,
-            content: string?,
+            content: string
         }
-    ) -> string;
+    ) -> string);
 
     --[=[
         Sends a POST request to the given URL, and returns the response.
@@ -1260,9 +1264,14 @@ declare http: {
         @param cookie string?
         @param referrer string?
         @param origin string?
-        @return (url: string, content: string?)
+        @return (response: string)
     ]=]
-    post: (
+    post: ((
+        {
+            url:      string,
+            content:  string
+        }
+    ) -> string) & ((
         {
             url:      string,
             content:  string,
@@ -1272,7 +1281,7 @@ declare http: {
             referrer: string?,
             origin:   string?
         }
-    ) -> string;
+    ) -> string);
 }
 
 declare crypt: {

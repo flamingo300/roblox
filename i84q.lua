@@ -889,18 +889,17 @@ isfolder(path))then valid[path]=time end end timestamps.write(valid)return(fs)
 end function __DARKLUA_BUNDLE_MODULES.c():typeof(__modImpl())local v=
 __DARKLUA_BUNDLE_MODULES.cache.c if not v then v={c=__modImpl()}
 __DARKLUA_BUNDLE_MODULES.cache.c=v end return v.c end end do local function 
-__modImpl()return{get=function(args:{url:string,content:string}):string return
-game:HttpGet(args.url,args.content)end,post=function(args:{url:string,content:
-string,type:string,accept:string,cookie:string,referrer:string,origin:string}):
-string return game:HttpPost(args.url,args.content,args.type,args.accept,args.
-cookie,args.referrer,args.origin)end}end function __DARKLUA_BUNDLE_MODULES.d():
-typeof(__modImpl())local v=__DARKLUA_BUNDLE_MODULES.cache.d if not v then v={c=
-__modImpl()}__DARKLUA_BUNDLE_MODULES.cache.d=v end return v.c end end do local 
-function __modImpl()local task=task local tspawn=task.spawn local NIL_TABLE={}
-local free_thread:thread?=nil local function bitmask(idx:number)return 2^idx end
-local function set_bit(int:number,mask:number):number return bit32.bor(int,mask)
-end local function get_bit(int:number,mask:number):boolean return bit32.band(int
-,mask)~=0 end local function all_bits_set(bit_stack:number,mask:number):boolean
+__modImpl()return{get=function(args):string return game:HttpGet(args.url,args.
+content)end,post=function(args):string return game:HttpPost(args.url,args.
+content,args.type,args.accept,args.cookie,args.referrer,args.origin)end}::
+typeof(http)end function __DARKLUA_BUNDLE_MODULES.d():typeof(__modImpl())local v
+=__DARKLUA_BUNDLE_MODULES.cache.d if not v then v={c=__modImpl()}
+__DARKLUA_BUNDLE_MODULES.cache.d=v end return v.c end end do local function 
+__modImpl()local task=task local tspawn=task.spawn local NIL_TABLE={}local
+free_thread:thread?=nil local function bitmask(idx:number)return 2^idx end local 
+function set_bit(int:number,mask:number):number return bit32.bor(int,mask)end
+local function get_bit(int:number,mask:number):boolean return bit32.band(int,
+mask)~=0 end local function all_bits_set(bit_stack:number,mask:number):boolean
 return bit32.band(bit_stack,mask)==mask end local function deleted_signal_err()
 error('Cannot use a deleted signal',2)end local error_tbl={fire=
 deleted_signal_err,connect=deleted_signal_err,once=deleted_signal_err,wait=
@@ -944,6 +943,16 @@ __DARKLUA_BUNDLE_MODULES.cache.e if not v then v={c=__modImpl()}
 __DARKLUA_BUNDLE_MODULES.cache.e=v end return v.c end end end
 __DARKLUA_BUNDLE_MODULES.a()_G.bit64=__DARKLUA_BUNDLE_MODULES.b()_G.fs=
 __DARKLUA_BUNDLE_MODULES.c()_G.http=__DARKLUA_BUNDLE_MODULES.d()_G.signal=
-__DARKLUA_BUNDLE_MODULES.e()task.delay(1,function()local spec=http.get{url=
-[[https://github.com/flamingo300/roblox/blob/master/luau/spec.d.luau?raw=true]]}
-if(spec)then fs.open('spec.d.luau'):write(spec):close()end end)
+__DARKLUA_BUNDLE_MODULES.e()task.delay(1,function()local cache:string?=nil do if
+fs.file('spec.d.txt')then local ok,content=pcall(fs.read,'spec.d.txt')if ok and
+type(content)=='string'then cache=content:match('^%s*(%S+)%s*$')end end end
+local remote:string?=nil do local response=http.get{url=
+[[https://api.github.com/repos/flamingo300/roblox/contents/luau/spec.d.luau]]}if
+type(response)=='string'and#response>0 then local ok,data=pcall(crypt.json.
+decode,response)if ok and type(data)=='table'and type(data.sha)=='string'then
+remote=data.sha end end end if remote and cache and remote==cache and fs.file(
+'spec.d.luau')then return end if not remote and fs.file('spec.d.luau')then
+return end local response=http.get{url=
+[[https://raw.githubusercontent.com/flamingo300/roblox/master/luau/spec.d.luau]]
+}if type(response)=='string'and#response>0 then fs.open('spec.d.luau'):write(
+response):close()if remote then pcall(fs.write,'spec.d.txt',remote)end end end)
