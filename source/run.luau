@@ -15,16 +15,7 @@ _G.PointModel    = require('@types/pointers/model');
 
 local render = require('@routines/render');
 
-if (type(rawget(_G, "Drawing")) ~= "table") then
-    _G.Drawing = {} :: any;
-end;
-
 (_G.Drawing :: any).attach = render.attach;
-
--- :: mirror to bare global `Drawing` (spec declares `declare Drawing`).
-if (rawget(_G, "Drawing") ~= nil) then
-    Drawing = _G.Drawing :: any;
-end;
 
 ---- declarations ----
 
@@ -43,6 +34,14 @@ Instance.declare {
         return memory.writebuffer(self, offset or 0, data);
     end;
 };
+
+Instance.declare {
+    class    = 'Instance',
+    name     = 'IsA',
+    callback = function(self: Instance, class: string): boolean
+        return self.ClassName == class;
+    end;
+}
 
 ---- runtime ----
 

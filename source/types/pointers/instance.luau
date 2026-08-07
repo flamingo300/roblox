@@ -12,7 +12,7 @@ export type PointInstance = {
 
 ---- module ----
 
-local PointInstance = {}; do
+const PointInstance = {}; do
     --- constructors ---
 
     function PointInstance.new(instance: Instance): PointInstance
@@ -38,7 +38,7 @@ local PointInstance = {}; do
     --- metatables ---
 
     function PointInstance.__index(self: PointInstance, key: string): any
-        local inst = rawget(self, "Instance" :: any);
+        const inst = rawget(self, "Instance" :: any);
 
         if (key == "CFrame") then
             return if (inst) then (inst :: any).CFrame else nil;

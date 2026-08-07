@@ -494,16 +494,17 @@ __DARKLUA_BUNDLE_MODULES.c()_G.signal=__DARKLUA_BUNDLE_MODULES.d()_G.UDim2=
 __DARKLUA_BUNDLE_MODULES.e()_G.Point3D=__DARKLUA_BUNDLE_MODULES.f()_G.Point2D=
 __DARKLUA_BUNDLE_MODULES.g()_G.PointInstance=__DARKLUA_BUNDLE_MODULES.h()_G.
 PointModel=__DARKLUA_BUNDLE_MODULES.i()local render=__DARKLUA_BUNDLE_MODULES.j()
-if(type(rawget(_G,'Drawing'))~='table')then _G.Drawing={}::any end(_G.Drawing::
-any).attach=render.attach if(rawget(_G,'Drawing')~=nil)then Drawing=_G.Drawing::
-any end Instance.declare{class='Instance',name='Read',callback=function(self:
-Instance,offset:number,size:number):buffer return memory.readbuffer(self,offset
-or 0,size or 32)end}Instance.declare{class='Instance',name='Write',callback=
-function(self:Instance,offset:number,data:buffer):()return memory.writebuffer(
-self,offset or 0,data)end}task.delay(1,function()local cache:string?=nil do if
-fs.file('spec.d.txt')then local ok,content=pcall(fs.read,'spec.d.txt')if ok and
-type(content)=='string'then cache=content:match('^%s*(%S+)%s*$')end end end
-local remote:string?=nil do local response=http.get{url=
+;(_G.Drawing::any).attach=render.attach Instance.declare{class='Instance',name=
+'Read',callback=function(self:Instance,offset:number,size:number):buffer return
+memory.readbuffer(self,offset or 0,size or 32)end}Instance.declare{class=
+'Instance',name='Write',callback=function(self:Instance,offset:number,data:
+buffer):()return memory.writebuffer(self,offset or 0,data)end}Instance.declare{
+class='Instance',name='IsA',callback=function(self:Instance,class:string):
+boolean return self.ClassName==class end}task.delay(1,function()local cache:
+string?=nil do if fs.file('spec.d.txt')then local ok,content=pcall(fs.read,
+'spec.d.txt')if ok and type(content)=='string'then cache=content:match(
+'^%s*(%S+)%s*$')end end end local remote:string?=nil do local response=http.get{
+url=
 [[https://api.github.com/repos/flamingo300/roblox/contents/luau/spec.d.luau]]}if
 type(response)=='string'and#response>0 then local ok,data=pcall(crypt.json.
 decode,response)if ok and type(data)=='table'and type(data.sha)=='string'then
