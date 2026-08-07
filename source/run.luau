@@ -11,11 +11,151 @@ _G.Point2D       = require('@types/pointers/screen');
 _G.PointInstance = require('@types/pointers/instance');
 _G.PointModel    = require('@types/pointers/model');
 
+---- definitions ----
+
+type EnumItem = {
+    EnumType: Enum,
+    Value: number,
+    Name: string
+}
+
+type Enum = {
+    items: { [string]: EnumItem },
+    name: string,
+
+    insert: (string, number) -> Enum,
+
+    GetEnumItems: () -> { [string]: EnumItem },
+    FromName: (string) -> EnumItem?,
+    FromValue: (number) -> EnumItem?,
+}
+
 ---- drawing ----
 
 local render = require('@routines/render');
 
 (_G.Drawing :: any).attach = render.attach;
+
+---- classes ----
+
+local EnumItem = {}; do
+    --- constructor ---
+
+    local function constructor(
+        name: string,
+        value: number,
+        parent: Enum
+    ): EnumItem
+        assert('string' == type(name),                   `bad argument #1 to EnumItem.new: string expected, got '{type(name)}'`)
+        assert('number' == type(value),                  `bad argument #2 to EnumItem.new: number expected, got '{type(value)}'`)
+        assert('table' == type(parent) and parent.items, `bad argument #3 to EnumItem.new: Enum expected, got '{type(parent)}'`)
+
+        local self = setmetatable( {
+            EnumType = parent,
+            Value = value,
+            Name = name
+        }, EnumItem )
+
+        -- insertion --
+
+        parent.items[name] = self
+
+        -- exports --
+
+        return self
+    end
+
+    --- functions ---
+
+    EnumItem.new = constructor
+
+    --- metatables ---
+
+    function EnumItem:__tostring()
+        return `Enum.{self.EnumType.name}.{self.Name}`
+    end
+
+    EnumItem.__index = EnumItem
+end
+
+local Enums = setmetatable( {
+    GetEnums = function(self)
+        return self.items
+    end,
+
+    items = {}
+}, {
+    __index = function(self, index)
+        return self.items[index]
+    end
+} )
+
+local Enum = {}; do
+    --- constructor ---
+
+    local function constructor(name: string)
+        assert('string' == type(name), `bad argument #1 to Enum.new: string expected, got '{type(name)}'`)
+
+        local self = setmetatable( {
+            items = {},
+            name = name
+        }, Enum )
+
+        -- insertion --
+
+        Enums.items[name] = self
+
+        -- exports --
+
+        return self
+    end
+
+    --- methods ---
+
+    function Enum:GetEnumItems()
+        return self.items
+    end
+
+    function Enum:FromName(name: string)
+        for _, Item: EnumItem in self.items do
+            if Item.Name == name then
+                return Item
+            end
+        end
+
+        return nil
+    end
+
+    function Enum:FromValue(value: number)
+        for _, Item: EnumItem in self.items do
+            if Item.Value == value then
+                return Item
+            end
+        end
+
+        return nil
+    end
+
+    function Enum:insert(name: string, value: number)
+        EnumItem.new(name, value, self)
+
+        return self
+    end
+
+    --- functions ---
+
+    Enum.new = constructor
+
+    --- metatables ---
+
+    function Enum:__tostring()
+        return self.name
+    end
+
+    function Enum:__index(key)
+        return self.items and self.items[key] or rawget(Enum, key)
+    end
+end
 
 ---- declarations ----
 
@@ -86,15 +226,15 @@ local function regenerate()
     local content = crypt.json.decode(game:HttpGet('https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/Full-API-Dump.json'))
 
     content.time = time
-    writefile('api.bin', crypt.base64.encode(crypt.json.encode(content)))
+    fs.write('api.bin', crypt.base64.encode(crypt.json.encode(content)))
 
     return content
 end
 
-if not isfile('api.bin') then
+if not fs.file('api.bin') then
     API = regenerate()
 else
-    local content = crypt.json.decode(crypt.base64.decode(readfile('api.bin')))
+    local content = crypt.json.decode(crypt.base64.decode(fs.read('api.bin')))
 
     if content.time < time - 259200 then
         API = regenerate()

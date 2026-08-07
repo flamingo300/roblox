@@ -493,9 +493,32 @@ __DARKLUA_BUNDLE_MODULES.a()_G.fs=__DARKLUA_BUNDLE_MODULES.b()_G.http=
 __DARKLUA_BUNDLE_MODULES.c()_G.signal=__DARKLUA_BUNDLE_MODULES.d()_G.UDim2=
 __DARKLUA_BUNDLE_MODULES.e()_G.Point3D=__DARKLUA_BUNDLE_MODULES.f()_G.Point2D=
 __DARKLUA_BUNDLE_MODULES.g()_G.PointInstance=__DARKLUA_BUNDLE_MODULES.h()_G.
-PointModel=__DARKLUA_BUNDLE_MODULES.i()local render=__DARKLUA_BUNDLE_MODULES.j()
-;(_G.Drawing::any).attach=render.attach Instance.declare{class='Instance',name=
-'Read',callback=function(self:Instance,offset:number,size:number):buffer return
+PointModel=__DARKLUA_BUNDLE_MODULES.i()type EnumItem={EnumType:Enum,Value:number
+,Name:string}type Enum={items:{[string]:EnumItem},name:string,insert:(string,
+number)->Enum,GetEnumItems:()->{[string]:EnumItem},FromName:(string)->EnumItem?,
+FromValue:(number)->EnumItem?}local render=__DARKLUA_BUNDLE_MODULES.j();(_G.
+Drawing::any).attach=render.attach local EnumItem={}do local function 
+constructor(name:string,value:number,parent:Enum):EnumItem assert('string'==
+type(name),`bad argument #1 to EnumItem.new: string expected, got '{type(name)}'`
+)assert('number'==type(value),`bad argument #2 to EnumItem.new: number expected, got '{
+type(value)}'`)assert('table'==type(parent)and parent.items,`bad argument #3 to EnumItem.new: Enum expected, got '{
+type(parent)}'`)local self=setmetatable({EnumType=parent,Value=value,Name=name},
+EnumItem)parent.items[name]=self return self end EnumItem.new=constructor
+function EnumItem:__tostring()return`Enum.{self.EnumType.name}.{self.Name}`end
+EnumItem.__index=EnumItem end local Enums=setmetatable({GetEnums=function(self)
+return self.items end,items={}},{__index=function(self,index)return self.items[
+index]end})local Enum={}do local function constructor(name:string)assert(
+'string'==type(name),`bad argument #1 to Enum.new: string expected, got '{type(
+name)}'`)local self=setmetatable({items={},name=name},Enum)Enums.items[name]=
+self return self end function Enum:GetEnumItems()return self.items end function
+Enum:FromName(name:string)for _,Item:EnumItem in self.items do if Item.Name==
+name then return Item end end return nil end function Enum:FromValue(value:
+number)for _,Item:EnumItem in self.items do if Item.Value==value then return
+Item end end return nil end function Enum:insert(name:string,value:number)
+EnumItem.new(name,value,self)return self end Enum.new=constructor function Enum:
+__tostring()return self.name end function Enum:__index(key)return self.items and
+self.items[key]or rawget(Enum,key)end end Instance.declare{class='Instance',name
+='Read',callback=function(self:Instance,offset:number,size:number):buffer return
 memory.readbuffer(self,offset or 0,size or 32)end}Instance.declare{class=
 'Instance',name='Write',callback=function(self:Instance,offset:number,data:
 buffer):()return memory.writebuffer(self,offset or 0,data)end}task.delay(1,
@@ -515,9 +538,9 @@ response):close()if remote then pcall(fs.write,'spec.d.txt',remote)end end end)
 local API local time=os.clock()local function regenerate()local content=crypt.
 json.decode(game:HttpGet(
 [[https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/Full-API-Dump.json]]
-))content.time=time writefile('api.bin',crypt.base64.encode(crypt.json.encode(
-content)))return content end if not isfile('api.bin')then API=regenerate()else
-local content=crypt.json.decode(crypt.base64.decode(readfile('api.bin')))if
+))content.time=time fs.write('api.bin',crypt.base64.encode(crypt.json.encode(
+content)))return content end if not fs.file('api.bin')then API=regenerate()else
+local content=crypt.json.decode(crypt.base64.decode(fs.read('api.bin')))if
 content.time<time-259200 then API=regenerate()else API=content end end for index
 ,data in API.Enums do local enum=Enum.new(data.Name)for _,item in data.Items do
 enum:insert(item.Name,item.Value)end end Instance.declare{class='Instance',name=
