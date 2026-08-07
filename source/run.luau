@@ -35,14 +35,6 @@ Instance.declare {
     end;
 };
 
-Instance.declare {
-    class    = 'Instance',
-    name     = 'IsA',
-    callback = function(self: Instance, class: string): boolean
-        return self.ClassName == class;
-    end;
-}
-
 ---- runtime ----
 
 task.delay(1, function()
@@ -86,3 +78,82 @@ task.delay(1, function()
         end;
     end;
 end);
+
+local API
+local time = os.clock()
+
+local function regenerate()
+    local content = crypt.json.decode(game:HttpGet('https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/Full-API-Dump.json'))
+
+    content.time = time
+    writefile('api.bin', crypt.base64.encode(crypt.json.encode(content)))
+
+    return content
+end
+
+if not isfile('api.bin') then
+    API = regenerate()
+else
+    local content = crypt.json.decode(crypt.base64.decode(readfile('api.bin')))
+
+    if content.time < time - 259200 then
+        API = regenerate()
+    else
+        API = content
+    end
+end
+
+for index, data in API.Enums do
+    local enum = Enum.new(data.Name)
+
+    for _, item in data.Items do
+        enum:insert(item.Name, item.Value)
+    end
+end
+
+Instance.declare {
+    class = 'Instance',
+    name  = 'IsA',
+    callback = {
+        method = function(self, className)
+            local currentClass = self.ClassName
+
+            if currentClass == className then
+                return true
+            end
+
+            for _, classData in API.Classes do
+                if classData.Name == currentClass then
+                    local superclass = classData.Superclass
+
+                    while superclass and superclass ~= "<<<ROOT>>>" do
+                        if superclass == className then
+                            return true
+                        end
+
+                        local found = false
+                        for _, parentClassData in API.Classes do
+                            if parentClassData.Name == superclass then
+                                superclass = parentClassData.Superclass
+                                found = true
+                                break
+                            end
+                        end
+
+                        if not found then
+                            break
+                        end
+                    end
+
+                    break
+                end
+            end
+
+            return false
+        end
+    }
+}
+
+---- exports ----
+
+_G.Enum = table.freeze(Enums)
