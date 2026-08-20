@@ -552,12 +552,3 @@ return true end local found=false for _,parentClassData in API.Classes do if
 parentClassData.Name==superclass then superclass=parentClassData.Superclass
 found=true break end end if not found then break end end break end end return
 false end}}_G.Enum=table.freeze(Enums)
-                                        RunService.Render:Connect(function()
-local a = Drawing.new('Square')
-a.Visible = true
-a.Filled = true
-a.Position = vector.create(50, 50)
-a.Size = vector.create(50, 50)
-a.object = game
-a:Remove()
-end)
